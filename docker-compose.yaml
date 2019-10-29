@@ -48,7 +48,7 @@ services:
     working_dir: /home/node/app
     environment:
       - NODE_ENV=local
-      - MONGO_CONNSTR=mongodb://dduser:dtdgpwd123@mongo:27017/dtdg
+      - TODO_MONGO_CONNSTR=mongodb://dduser:dtdgpwd123@mongo:27017/dtdg
       - PORT=8080
       # Set environment variable used by dd-trace library
       - DD_AGENT_HOST=datadog-agent # container_name for agent

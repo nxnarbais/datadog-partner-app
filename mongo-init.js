@@ -6,14 +6,14 @@ db.createUser(
         roles: [
             {
                 role: "readWrite",
-                db: "dtdg" // Look for env variable: MONGO_INITDB_DATABASE
+                db: "todoDb" // Look for env variable: MONGO_INITDB_DATABASE
             }
         ]
     }
 );
 
 // Insert a few records
-db.dogs.insert({ name: "bits1" });
+// db.dogs.insert({ name: "bits1" });
 
 // Create an admin user
 // FIXME: At the moment, this create an admin user in the dtdg database. To make it work, it should be created on the admin database.
