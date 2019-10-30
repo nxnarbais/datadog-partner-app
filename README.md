@@ -123,7 +123,7 @@ const tracer = require('dd-trace').init({
   tags: {
     serviceteam: "dogdemo"
   },
-})
+});
 ```
 
 ### Trace search and analytics
@@ -132,9 +132,100 @@ It is also possible to enable trace search and analytics to enable additional fu
 
 ### Log injection
 
-The log injection enable the library to inject the trace_id to link the logs to the trace itself. For the application chosen here, it uses a log library called morgan whereas Datadog currently support Winston OOTB. [Documentation](https://docs.datadoghq.com/tracing/advanced/connect_logs_and_traces/?tab=nodejs)
+The log injection enable the library to inject the trace_id to link the logs to the trace itself. For automated trace injection, Datadog supports the Winston library. [Documentation](https://docs.datadoghq.com/tracing/advanced/connect_logs_and_traces/?tab=nodejs).
 
-To make it work, you can look at adding the trace_id manually and parse it in the pipeline within the platform or you can change the log library from morgan to winston.
+These are a few steps to implement it within the app:
+
+- Go to the app directory: `cd app`
+- Install winston: `npm install winston`
+- Create `wlogger.js` file with the content below:
+
+```
+const winston = require('winston');
+const wlogger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.Console(),
+  ]
+});
+module.exports = wlogger;
+```
+
+- Import this winston logger in `server.js`:
+
+```
+const wlogger = require('./wlogger');
+```
+
+- Comment the line with `app.use(logger('dev'));`
+- Setup the morgan library to use winston for logging (this should be added below the commented line above):
+
+```
+class MyStream {
+  write(text) {
+      wlogger.info(text)
+  }
+}
+let myStream = new MyStream()
+app.use(logger('combined', { stream: myStream }));
+```
+
+At this point all the logs sent via morgan will use Winston and the dd-trace library will automatically insert the trace_id.
+
+In addition, this application output some information via console.log, you can override this to use Winston as well.
+
+- Open again the `server.js` file: `vim app/server.js`
+- Replace the line: ``console.error(`### ERROR: ${err.message}`);`` with: ``wlogger.error(`### ERROR: ${err.message}`);``
+
+- Open the `todo/utils.js` file: `vim app/todo/utils.js`
+- Import the wlooger.js file:
+
+```
+const wlogger = require('../wlogger');
+```
+
+- Replace the console.log lines with the Winston logger:
+
+```
+const wlogger = require('../wlogger');
+
+class Utils {
+  //
+  // Try to send back the underlying error code and message
+  //
+  sendError(res, err, code = 500) {
+    // console.dir(err);
+    // console.log(`### Error with API ${JSON.stringify(err)}`); 
+    wlogger.error(`### Error with API ${JSON.stringify(err)}`);
+    let statuscode = code;
+    if(err.code > 1) statuscode = err.code;
+
+    // App Insights
+    const appInsights = require("applicationinsights");    
+    if(appInsights.defaultClient) appInsights.defaultClient.trackException({exception: err});
+    
+    res.status(statuscode).send(err);
+    return;
+  }
+
+  //
+  // Just sends data
+  //
+  sendData(res, data) {
+    // App Insights
+    const appInsights = require("applicationinsights");    
+    if(appInsights.defaultClient) appInsights.defaultClient.trackEvent({name: "dataEvent", properties: {data: JSON.stringify(data)}});
+    
+    res.status(200).send(data)
+    return;    
+  }
+}
+
+module.exports = new Utils();
+```
+
+Additional logging can be added in other places to add additional information.
 
 ### Runtime metrics
 
