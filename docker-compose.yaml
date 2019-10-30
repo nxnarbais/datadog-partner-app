@@ -67,15 +67,15 @@ services:
     networks:
       - my-net
     labels:
-        com.datadoghq.ad.logs: '[{"source":"expressjs","service":"express-dd"}]'
+        com.datadoghq.ad.logs: '[{"source":"expressjs","service":"nodejs-demoapp"}]'
 
   datadog:
     container_name: datadog-agent
     image: datadog/agent:latest
     environment:
       ## GLOBALS
-      - DD_API_KEY
-      - DD_SITE
+      - DD_API_KEY # The value will be taken from the .env file
+      - DD_SITE # The value will be taken from the .env file
       - DD_HOSTNAME=localpro
       - DD_TAGS=env:demo owner:narbais
       - DD_AC_EXCLUDE=name:datadog-agent # exclude this container from data collection
