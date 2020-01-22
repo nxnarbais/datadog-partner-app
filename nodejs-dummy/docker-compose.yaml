@@ -45,7 +45,7 @@ services:
   node:
     image: "node:12-slim"
     container_name: nodeapp
-    working_dir: /home/node/app
+    working_dir: /home/node/app/src
     environment:
       - NODE_ENV=local
       - TODO_MONGO_CONNSTR=mongodb://dduser:dtdgpwd123@mongo:27017/dtdg
