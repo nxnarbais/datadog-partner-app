@@ -5,7 +5,7 @@ This app is using the Datadog agent in a container.
 ## Requirements
 
 - Node should be available
-- Docker should be available (including docker-compose)
+- Docker should be available (including the latest docker-compose. Steps here if you need to upgrade https://docs.docker.com/compose/install/)
 
 ## Installation steps
 
@@ -19,10 +19,10 @@ This app is using the Datadog agent in a container.
 
 ### Step 2: Clone demoapp
 
-- In the same directory (`dd-partner-app`), clone demo app:
+- In the same directory (`dd-partner-app/nodejs-dummy`), clone demo app:
     - option 1: `git clone git@github.com:benc-uk/nodejs-demoapp.git app`
     - option 2: `git clone https://github.com/benc-uk/nodejs-demoapp app`
-- Move to cloned app: `cd app/`
+- Move to cloned app source directory: `cd app/src`
 - Install node dependencies: `npm install`
 - Check that this is working well:
     - Start the app: `npm start`
@@ -31,11 +31,11 @@ This app is using the Datadog agent in a container.
 
 ### Step 3: Configure the containerized agent
 
-- Go back to parent directory: `cd ..` (`dd-partner-app` directory)
+- Go back to parent directory: `cd ../..` (`dd-partner-app/nodejs-dummy` directory)
 - Copy environment file example: `cp .env.example .env`
 - Edit `.env` file: `vim .env`
     - Select the relevant site: `datadoghq.com` or `datadoghq.eu`
-    - Add you API key
+    - Add your API key
 
 ### Step 4: Check the project structure
 
@@ -44,6 +44,7 @@ Note: not all the files are shown here
 ```
 - dd-partner-app/nodejs-dummy
     - app
+      - src
         - server.js
         - route.js
         - etc.
@@ -69,10 +70,11 @@ Create a docker network:
 ```
 docker network create my-net
 ```
+Note: If you get a `permission denied`, preface the `docker` commands with `sudo`. To avoid that going forward, you can add your user to the Unix group called docker (`sudo usermod -aG docker $USER`) and reload your terminal.
 
 **Warning**: If you have an other agent running on the machine, make sure to stop it before starting this new application.
 
-Start all the containers from the docker-compose file (Note: make sure to be in the `dd-partner-app` directory):
+Start all the containers from the docker-compose file (Note: make sure to be in the `dd-partner-app/nodejs-dummy` directory):
 
 ```
 docker-compose up -d
@@ -97,7 +99,7 @@ At that point, you should see some logs coming into the platform as well as some
 To start to see some traces within the Datadog platform, you will need to instrument the application.
 
 ```
-cd app/
+cd app/src
 npm install --save dd-trace
 ```
 
@@ -108,6 +110,14 @@ const tracer = require('dd-trace').init()
 ```
 
 (Note: This code could be added below the first debug line: `console.log('### Node.js demo app starting...');`)
+
+Make some requests to the application:
+
+```
+curl http://localhost:8080
+curl http://localhost:8080/weather
+curl http://localhost:8080/todo
+```
 
 At this point, you should see some services in the APM service page: [US](https://app.datadoghq.com/apm/services) [EU](https://app.datadoghq.eu/apm/services)
 
@@ -136,7 +146,7 @@ The log injection enable the library to inject the trace_id to link the logs to 
 
 These are a few steps to implement it within the app:
 
-- Go to the app directory: `cd app`
+- Go to the app directory: `cd app/src`
 - Install winston: `npm install winston`
 - Create `wlogger.js` file with the content below:
 
@@ -175,11 +185,11 @@ At this point all the logs sent via morgan will use Winston and the dd-trace lib
 
 In addition, this application output some information via console.log, you can override this to use Winston as well.
 
-- Open again the `server.js` file: `vim app/server.js`
+- Open again the `server.js` file: `vim app/src/server.js`
 - Replace the line: ``console.error(`### ERROR: ${err.message}`);`` with: ``wlogger.error(`### ERROR: ${err.message}`);``
 
-- Open the `todo/utils.js` file: `vim app/todo/utils.js`
-- Import the wlooger.js file:
+- Open the `todo/utils.js` file: `vim app/src/todo/utils.js`
+- Import the wlogger.js file:
 
 ```
 const wlogger = require('../wlogger');
