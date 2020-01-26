@@ -4,8 +4,10 @@ This app is using the Datadog agent in a container.
 
 ## Requirements
 
-- Node should be available
-- Docker should be available (including the latest docker-compose. Steps here if you need to upgrade https://docs.docker.com/compose/install/)
+- Ubuntu (> 14.x.x/Trusty)
+- Node
+- Docker (>= 1.9.0)
+- Docker-compose ([docs to install/upgrade](https://docs.docker.com/compose/install/))
 
 ## Installation steps
 
@@ -72,12 +74,20 @@ docker network create my-net
 ```
 Note: If you get a `permission denied`, preface the `docker` commands with `sudo`. To avoid that going forward, you can add your user to the Unix group called docker (`sudo usermod -aG docker $USER`) and reload your terminal.
 
+Note: If you get `'network' is not a docker command`, [upgrade Docker to >= 1.9.0](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
+
 **Warning**: If you have an other agent running on the machine, make sure to stop it before starting this new application.
 
 Start all the containers from the docker-compose file (Note: make sure to be in the `dd-partner-app/nodejs-dummy` directory):
 
 ```
 docker-compose up -d
+```
+
+Note: If you get the following error, you must upgrade Ubuntu to >= 16.04
+
+```
+ERROR: for datadog-agent  Cannot start service datadog: OCI runtime create failed: container_linux.go:348: starting container process caused "process_linux.go:297: copying bootstrap data to pipe caused \"write init-p: broken pipe\"": unknown
 ```
 
 At this point you should have two endpoints available:
