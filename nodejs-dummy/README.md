@@ -4,7 +4,7 @@ This app is using the Datadog agent in a container.
 
 ## Requirements
 
-- Ubuntu (> 14.x.x/Trusty)
+- Ubuntu (>= 16.04.x/Xenial)
 - Node
 - Docker (>= 1.9.0)
 - Docker-compose ([docs to install/upgrade](https://docs.docker.com/compose/install/))
