@@ -17,7 +17,7 @@ $ENV:DD_API_KEY="API_KEY"
 
 - On linux or mac, run the script with:
 ```
-DD_API_KEY="API_KEY" path/to/submit-logs.sh
+/opt/datadog-agent/embedded/bin/python3 submit_logs.py
 ```
 
 
@@ -31,7 +31,14 @@ sudo chmod -x submit-logs.sh
 ```
 
 Run the script with: 
+
+Linux
 ```
 DD_API_KEY="API_KEY" path/to/submit-logs.sh <YOU_API_KEY>
+```
+
+Mac
+```
+export DD_API_KEY=<KEY> & sh submit-logs.sh $DD_API_KEY
 ```
 
