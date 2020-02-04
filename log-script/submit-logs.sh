@@ -43,7 +43,7 @@ do
 		full_message="[$date] Some text here that isn't JSON. [Message Begins] {\"key\": \"value\", \"another_key\": \"another_value\", \"measure_one\": $random_num, \"status\": \"$status\", \"url\": \"$uri\"} [user$other_other_random_num]"
 	fi
 
-	curl -X POST "https://http-intake.logs.datadoghq.com/v1/input/$DD_API_KEY?ddsource=myapp1&host=$(hostname)" \
+	curl -X POST "https://http-intake.logs.datadoghq.com/v1/input/$DD_API_KEY?ddsource=myapp&host=$(hostname)" \
 	     -H "Content-Type: text/plain" \
 	     -d "$full_message"
 		echo $i
