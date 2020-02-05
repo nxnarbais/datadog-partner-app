@@ -1,0 +1,58 @@
+version: '3.7'
+
+services:
+
+  python:
+    # image: "python:3"
+    build: .
+    container_name: demo-python-statsd
+    working_dir: /home/app
+    environment:
+      # Set environment variable used by node-dogstatsd library
+      - STATSD_HOST=datadog-agent
+      - STATSD_PORT=8125 # default for statsd
+    volumes:
+      - ./:/home/app
+    command: "python app.py"
+    networks:
+      - my-net
+    labels:
+        com.datadoghq.ad.logs: '[{"source":"python","service":"python-demoapp"}]'
+
+  datadog:
+    container_name: datadog-agent
+    image: datadog/agent:latest
+    environment:
+      ## GLOBALS
+      - DD_API_KEY # The value will be taken from the .env file
+      - DD_SITE # The value will be taken from the .env file
+      - DD_HOSTNAME=localpro
+      - DD_TAGS=env:demo owner:narbais
+      - DD_AC_EXCLUDE=name:datadog-agent # exclude this container from data collection
+      ## TAGS
+      - DD_DOCKER_LABELS_AS_TAGS=true
+      - DD_DOCKER_ENV_AS_TAGS=true
+      ## APM https://docs.datadoghq.com/agent/docker/apm/
+      - DD_APM_ENABLED=true
+      - DD_APM_NON_LOCAL_TRAFFIC=true
+      ## LOGS https://docs.datadoghq.com/agent/docker/log/
+      - DD_LOGS_ENABLED=true
+      - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
+      ## LIVE PROCESSES https://docs.datadoghq.com/graphing/infrastructure/process/?tab=docker
+      - DD_PROCESS_AGENT_ENABLED=true
+      ## DOGSTATSD
+      - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
+    ports:
+      - 8126:8126/tcp # APM available from any host
+      - 8125:8125/udp # Dogstatsd
+    volumes:
+     - /var/run/docker.sock:/var/run/docker.sock:ro
+     - /proc/:/host/proc/:ro
+     - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+     - /etc/passwd:/etc/passwd:ro # LIVE PROCESSES
+    networks:
+       - my-net # Created with docker network create my-net and deleted with docker network rm my-net
+
+networks:
+  my-net:
+    external: true
