@@ -251,6 +251,26 @@ Additional logging can be added in other places to add additional information.
 
 The datadog agent can also collect some runtime metrics. This feature is currently in beta for NodeJs. [Documentation](https://docs.datadoghq.com/tracing/advanced/runtime_metrics/?tab=nodejs)
 
+### Even further with RUM: Real User Monitoring
+
+To get started, just follow the instructions to generate a token for RUM ([here is the doc](https://docs.datadoghq.com/real_user_monitoring/installation/?tab=eu)).
+
+Then make sure you select the right datacenter (eu or com) and add the advised few code lines such as the one below for eu in the file `_foot.ejs` located in `dd-partner-app/nodejs-dummy/app/views/_foot.ejs`. This will have to be added before the `</html>` tag.
+
+```
+<script
+  src="https://www.datadoghq-browser-agent.com/datadog-rum-eu.js"
+  type="text/javascript">
+</script>
+<script>
+  window.DD_RUM && window.DD_RUM.init({
+    clientToken: '<CLIENT_TOKEN>',
+    applicationId: '<APPLICATION_ID>',
+    sampleRate: 100
+  });
+</script>
+```
+
 ## Additional tips
 
 ### Docker tips
@@ -275,6 +295,8 @@ Go to the application on http://localhost:8080 and click on links to generate tr
 If you app has a public url, it is possible to create traffic with some browser and api tests.
 
 ## TODO
+
+To improve this repository for more advanced exercices:
 
 - Add notes on how to configure log ingestion
 - Add dashboards, log pipelines, etc. to inject into environment
