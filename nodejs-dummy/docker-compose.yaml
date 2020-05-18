@@ -18,10 +18,10 @@ services:
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     ## Autodiscovery labels
     labels:
-        com.datadoghq.ad.check_names: '["mongo"]'
-        com.datadoghq.ad.init_configs: '[{}]'
-        com.datadoghq.ad.instances: '[{"server":"mongodb://root:example@%%host%%:27017/admin","additional_metrics":["collection","metrics.commands","tcmalloc","top"]}]'
-        com.datadoghq.ad.logs: '[{"source":"mongodb","service":"mongo"}]'
+      com.datadoghq.ad.check_names: '["mongo"]'
+      com.datadoghq.ad.init_configs: '[{}]'
+      com.datadoghq.ad.instances: '[{"server":"mongodb://root:example@%%host%%:27017/admin","additional_metrics":["collection","metrics.commands","tcmalloc","top"]}]'
+      com.datadoghq.ad.logs: '[{"source":"mongodb","service":"mongo"}]'
 
   mongo-express:
     image: mongo-express
@@ -40,7 +40,7 @@ services:
       - my-net
     ## Autodiscovery labels
     labels:
-        com.datadoghq.ad.logs: '[{"source":"mongodb-express","service":"mongodb-express"}]'
+      com.datadoghq.ad.logs: '[{"source":"mongodb-express","service":"mongodb-express"}]'
 
   node:
     image: "node:12-slim"
@@ -67,7 +67,7 @@ services:
     networks:
       - my-net
     labels:
-        com.datadoghq.ad.logs: '[{"source":"expressjs","service":"nodejs-demoapp"}]'
+      com.datadoghq.ad.logs: '[{"source":"expressjs","service":"nodejs-demoapp"}]'
 
   datadog:
     container_name: datadog-agent
@@ -77,7 +77,7 @@ services:
       - DD_API_KEY # The value will be taken from the .env file
       - DD_SITE # The value will be taken from the .env file
       - DD_HOSTNAME=localpro
-      - DD_TAGS=env:demo owner:narbais
+      - DD_TAGS=env:local owner:narbais
       - DD_AC_EXCLUDE=name:datadog-agent # exclude this container from data collection
       ## TAGS
       - DD_DOCKER_LABELS_AS_TAGS=true
@@ -101,7 +101,7 @@ services:
      - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
      - /etc/passwd:/etc/passwd:ro # LIVE PROCESSES
     networks:
-       - my-net # Created with docker network create my-net and deleted with docker network rm my-net
+      - my-net # Created with docker network create my-net and deleted with docker network rm my-net
 
 networks:
   my-net:

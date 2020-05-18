@@ -195,8 +195,12 @@ At this point all the logs sent via morgan will use Winston and the dd-trace lib
 
 In addition, this application output some information via console.log, you can override this to use Winston as well.
 
+For instance on the main `server.js` file:
+
 - Open again the `server.js` file: `vim app/src/server.js`
 - Replace the line: ``console.error(`### ERROR: ${err.message}`);`` with: ``wlogger.error(`### ERROR: ${err.message}`);``
+
+Or on the todo module:
 
 - Open the `todo/utils.js` file: `vim app/src/todo/utils.js`
 - Import the wlogger.js file:
@@ -247,6 +251,14 @@ module.exports = new Utils();
 
 Additional logging can be added in other places to add additional information.
 
+##### Setup a pipeline within Datadog
+
+Most logs have a specific format from Winston, a pipeline can be created with a grok parser. Here is the parsing rule that can be set:
+
+```
+genericRule \:\:ffff\:%{ipv4:network.client.ip}\s+-\s+-\s+\[%{date("dd/MMM/yyyy:HH:mm:ss Z"):date}\]\s+\"%{word:http.method}\s+%{notSpace:http.url}\s+%{notSpace:http.version}\"\s+%{integer:http.status_code}\s+%{integer:token_1}?-?\s+\"%{notSpace:http.from_url}\"\s+\"%{data:browser.info}\"
+```
+
 #### Runtime metrics
 
 The datadog agent can also collect some runtime metrics. This feature is currently in beta for NodeJs. [Documentation](https://docs.datadoghq.com/tracing/advanced/runtime_metrics/?tab=nodejs)
@@ -269,6 +281,32 @@ Then make sure you select the right datacenter (eu or com) and add the advised f
     sampleRate: 100
   });
 </script>
+```
+
+### What about sending some metrics?
+
+To send custom application metrics into Datadog, the easiest way is to use [DogStatsD](https://docs.datadoghq.com/developers/dogstatsd/).
+
+The agent in the docker-compose file is already configured to receive those metrics. So to get started, follow the instruction below.
+
+- Install dependency. On `app/src/` run `npm install --save node-dogstatsd`
+- In `server.js` instantiate dogstatsd by adding the line below:
+
+```
+// Setup Datadog node runtime metrics and statsD
+const StatsD = require('node-dogstatsd').StatsD;
+const dogstatsd = new StatsD(process.env.DD_AGENT_HOST,process.env.DD_STATSD_AGENT_PORT);
+```
+
+- Create now a middleware to count the number of page viewed by adding the snippet below before instantiating any route (e.g. before `// Routes & controllers`):
+
+```
+// On every page, this middleware will be applied
+// This middleware will create a counter that increment on each call
+app.use((req, res, next) => {
+  dogstatsd.increment('nodejs.page.views'); // Create a metric in Datadog
+  next();
+});
 ```
 
 ## Additional tips
