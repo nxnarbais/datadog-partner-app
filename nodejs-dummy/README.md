@@ -309,6 +309,16 @@ app.use((req, res, next) => {
 });
 ```
 
+As an example you can also, add this code snippet to `app/src/todo/routes.js` in the POST `/api/todo` before `let result = await db.collection(COLLECTION).insertOne(todo)`:
+
+```
+const { title, type, done } = todo;
+dogstatsd.gauge('nodejs.todo.payload_size', title.length, [`type:${type}`, `done:${done}`]);
+dogstatsd.increment('nodejs.todo.payload_type.count', 1, [`type:${type}`, `done:${done}`]);
+```
+
+This will publish the size of the todo content as a gauge to the Datadog platform and count the number of todo per type. Of course do not forget to instantiate dogstatsd on this file.
+
 ## Additional tips
 
 ### Docker tips
