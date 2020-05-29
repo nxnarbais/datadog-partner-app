@@ -5,7 +5,7 @@ This repository provides a few applications to setup an app instrumented to work
 Demo Apps:
 
 - [NodeJS Dummy App](./nodejs-dummy): Traces, Logs, DogStatsD
-- [Java SpringBoot Dummy App](./javaspringbook-dummy): Traces, Logs
+- [Java SpringBoot Dummy App](./javaspringboot-dummy): Traces, Logs
 - [Log Parsing](./log-script): Logs
 
 ### Other app to explore
