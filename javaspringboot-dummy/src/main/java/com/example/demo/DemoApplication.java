@@ -6,8 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-// import com.timgroup.statsd.NonBlockingStatsDClientBuilder;
-// import com.timgroup.statsd.StatsDClient;
+// DogStatS
+import com.timgroup.statsd.NonBlockingStatsDClientBuilder;
+import com.timgroup.statsd.StatsDClient;
 
 @SpringBootApplication
 @RestController
@@ -19,6 +20,7 @@ public class DemoApplication {
 
 	@GetMapping("/hello")
 	public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
+		// <DOGSTATSD>
 		// StatsDClient Statsd = new NonBlockingStatsDClientBuilder()
 		// 			.prefix("statsd")
 		// 			.hostname("localhost")
@@ -26,6 +28,8 @@ public class DemoApplication {
 		// 			.build();
 		// String nameTag = "name:" + name;
 		// Statsd.increment("page.views", 1, new String[]{"endpoint:hello", nameTag});
+		// <DOGSTATSD>
+
 		return String.format("Hello %s!", name);
 	}
 

@@ -64,18 +64,38 @@ docker-compose up
 
 Run your application a few more times and you should start to see some traces in your account.
 
-## Additional configuration
+## Enrich your trace with tags and attributes
 
 You'll notice with this simple setup that the service is named `unnamed-java-app`. You can now check for [additional properties](https://docs.datadoghq.com/tracing/setup/java/#configuration) to set to get a cleaner and more actionable data.
 
 For instance, here is the final command I run:
 ```
-java -javaagent:./dd-java-agent-0.52.0.jar -Ddd.service=dd-partner-demo -Ddd.tags=develope:narbais	-Ddd.version=0.0.1 -jar build/libs/demo-0.0.1-SNAPSHOT.jar
+java -javaagent:./dd-java-agent-0.52.0.jar -Ddd.service=dd-partner-demo	-Ddd.version=0.0.1 -Ddd.tags=partner.class:workshop,partner.app:javaspringboot-dummy,owner:ddog,customer:abc,team:team -jar build/libs/demo-0.0.1-SNAPSHOT.jar
 ```
+
+All the tags added can be found in the trace attributes. Note that the tag `owner` is not overriding the tag `owner` set on the agent. The tag `env` is overriden but not the tag team.
 
 ## DogStatsD
 
 You can also submit metrics from your application via DogStatsD, you can find some doc [here](https://docs.datadoghq.com/developers/dogstatsd/?tab=java). The dependency can be found the the maven [repository](https://mvnrepository.com/artifact/com.datadoghq/java-dogstatsd-client).
 
-In this project, the dependency is already set in the `build.gradle` file. You just have to uncomment the various lines in `src/main/java/com/example/demo/DemoApplication.java` and in `src/main/java/com/example/demo/Greeting.java`.
+In this project, the dependency is already set in the `build.gradle` file. You just have to uncomment the various lines between `<DOGSTATSD>` in `src/main/java/com/example/demo/DemoApplication.java` and in `src/main/java/com/example/demo/Greeting.java`.
 
+## Instrument a method
+
+### Option 1: @Trace
+
+In this project, the dependency is already set in the `build.gradle` file. You just have to uncomment the various lines between `<@TRACE>` in `src/main/java/com/example/demo/DemoApplication.java` and in `src/main/java/com/example/demo/Greeting.java`.
+
+### Option 2: dd.trace.methods
+
+<!-- FIXME: -->
+Add the method of interest in your Java execution:
+```
+-Ddd.trace.methods=com.example.demo.GreetingController[method0]
+```
+
+## TODO
+
+- Move app to JDK 11 to use profiling
+- Fix option 2 in Instrument a method

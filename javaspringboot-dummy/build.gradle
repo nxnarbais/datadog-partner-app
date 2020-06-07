@@ -20,6 +20,10 @@ dependencies {
 	}
 	// https://mvnrepository.com/artifact/com.datadoghq/java-dogstatsd-client
 	compile group: 'com.datadoghq', name: 'java-dogstatsd-client', version: '2.10.1'
+	// https://developers.google.com/api-client-library/java
+	compile 'com.google.api-client:google-api-client:1.30.9'
+	// https://mvnrepository.com/artifact/com.datadoghq/dd-trace-api
+	compile group: 'com.datadoghq', name: 'dd-trace-api', version: '0.54.0'
 }
 
 test {
