@@ -1,6 +1,0 @@
-.gradle/
-.idea/
-build/
-.gitignore
-gradlew.bat
-dd-java-agent-0.52.0.jar
