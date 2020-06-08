@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-// https://developers.google.com/api-client-library/java
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
@@ -49,26 +48,22 @@ public class GreetingController {
 		callWeb1();
 		Thread.sleep(200);
 		callWeb2();
-
-		// <@TRACE>
-		// method2();
-		// <@TRACE>
 	}
 
 	public static void method1() throws InterruptedException {
 		Thread.sleep(250);
 	}
 
-	public static void callWeb1() throws IOException, InterruptedException {
+	public static void callWeb1() throws IOException {
 		HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
 		HttpRequest request = requestFactory.buildGetRequest(new GenericUrl("https://github.com"));
-		String rawResponse = request.execute().parseAsString();
+		request.execute().parseAsString();
 	}
 
-	public static void callWeb2() throws IOException, InterruptedException {
+	public static void callWeb2() throws IOException {
 		HttpRequestFactory requestFactory = new NetHttpTransport().createRequestFactory();
 		HttpRequest request = requestFactory.buildGetRequest(new GenericUrl("https://www.google.com"));
-		String rawResponse = request.execute().parseAsString();
+		request.execute().parseAsString();
 	}
 
 	// <@TRACE>
