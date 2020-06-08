@@ -55,4 +55,4 @@ Thumbs.db
 build/
 .gitignore
 gradlew.bat
-./javaspringboot-dummy/dd-java-agent-0.52.0.jar
+javaspringboot-dummy/dd-java-agent-0.52.0.jar
