@@ -7,6 +7,7 @@ Demo Apps:
 - [NodeJS Dummy App](./nodejs-dummy): Traces, Logs, DogStatsD
 - [Java SpringBoot Dummy App](./javaspringboot-dummy): Traces, Logs
 - [Log Parsing](./log-script): Logs
+- [Custom Check](./customcheck): Custom Check
 
 ### Other app to explore
 

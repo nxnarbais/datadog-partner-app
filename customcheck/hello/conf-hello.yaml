@@ -1,0 +1,6 @@
+# To be located in conf.d/hello.yaml
+
+init_config:
+
+instances:
+  - min_collection_interval: 30
