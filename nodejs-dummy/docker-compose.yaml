@@ -79,9 +79,6 @@ services:
       - DD_HOSTNAME=localpro
       - DD_TAGS=env:local owner:narbais
       - DD_AC_EXCLUDE=name:datadog-agent # exclude this container from data collection
-      ## TAGS
-      - DD_DOCKER_LABELS_AS_TAGS=true
-      - DD_DOCKER_ENV_AS_TAGS=true
       ## APM https://docs.datadoghq.com/agent/docker/apm/
       - DD_APM_ENABLED=true
       - DD_APM_NON_LOCAL_TRAFFIC=true
