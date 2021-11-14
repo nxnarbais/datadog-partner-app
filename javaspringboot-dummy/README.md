@@ -2,19 +2,6 @@
 
 This app is based on the [quick start guide](https://spring.io/quickstart) for Spring boot and on the [building a restful web service](https://spring.io/guides/gs/actuator-service/).
 
-## First steps
-
-To run the app:
-
-```
-./gradlew bootRun
-```
-
-You can also build the JAR file by using `./gradlew build` and then run the JAR file, as follows:
-
-```
-java -jar build/libs/YOUR_FILE_NAME.jar
-```
 
 To check if this works well go to [localhost:8080/hello?name=Datadog](http://localhost:8080/hello?name=Datadog) and [localhost:8080/greeting?name=dd-partner](http://localhost:8080/greeting?name=dd-partner).
 
@@ -35,10 +22,10 @@ wget -O dd-java-agent.jar 'https://repository.sonatype.org/service/local/artifac
 java -javaagent:./dd-java-agent.jar -jar build/libs/YOUR_FILE_NAME.jar
 ```
 
-In my case at that moment:
+Example for the current project:
 
 ```
-java -javaagent:./dd-java-agent-0.52.0.jar -jar build/libs/demo-0.0.1-SNAPSHOT.jar
+java -javaagent:./dd-java-agent.jar -jar build/libs/demo-0.0.1-SNAPSHOT.jar
 ```
 
 And that's it since the framework that we use is [compatible](https://docs.datadoghq.com/tracing/setup/java/#compatibility) with auto-instrumentation.
@@ -70,7 +57,7 @@ You'll notice with this simple setup that the service is named `unnamed-java-app
 
 For instance, here is the final command I run:
 ```
-java -javaagent:./dd-java-agent-0.52.0.jar -Ddd.service=dd-partner-demo	-Ddd.version=0.0.1 -Ddd.tags=partner.class:workshop,partner.app:javaspringboot-dummy,owner:ddog,customer:abc,team:team -jar build/libs/demo-0.0.1-SNAPSHOT.jar
+java -javaagent:./dd-java-agent.jar -Ddd.service=dd-partner-demo -Ddd.version=0.0.1 -Ddd.tags=partner.class:workshop,partner.app:javaspringboot-dummy,owner:ddog,customer:abc,team:team -jar build/libs/demo-0.0.1-SNAPSHOT.jar
 ```
 
 All the tags added can be found in the trace attributes. Note that the tag `owner` is not overriding the tag `owner` set on the agent. The tag `env` is overriden but not the tag team.

@@ -49,3 +49,10 @@ Thumbs.db
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
 
+# Java bits
+.gradle/
+.idea/
+build/
+.gitignore
+javaspringboot-dummy/gradlew.bat
+javaspringboot-dummy/dd-java-agent-0.52.0.jar

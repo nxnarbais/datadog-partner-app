@@ -15,9 +15,6 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
 	// https://mvnrepository.com/artifact/com.datadoghq/java-dogstatsd-client
 	compile group: 'com.datadoghq', name: 'java-dogstatsd-client', version: '2.10.1'
 	// https://developers.google.com/api-client-library/java
@@ -25,8 +22,3 @@ dependencies {
 	// https://mvnrepository.com/artifact/com.datadoghq/dd-trace-api
 	compile group: 'com.datadoghq', name: 'dd-trace-api', version: '0.54.0'
 }
-
-test {
-	useJUnitPlatform()
-}
-
