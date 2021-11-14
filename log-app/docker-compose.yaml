@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+
+  node:
+    image: "node:16-slim"
+    container_name: logapp
+    working_dir: /home/logapp
+    environment:
+      # Set environment variable used by dd-trace library
+      - DD_AGENT_HOST=datadog-agent # container_name for agent
+      - DD_TRACE_AGENT_PORT=8126 # default port for APM
+      # Set environment variable used by node-dogstatsd library
+      - DD_STATSD_AGENT_PORT=8125 # default for statsd
+    volumes:
+      - ./:/home/logapp
+    ports:
+      - 3000:3000
+    expose:
+      - 3000
+    command: "npm run start"
+    labels:
+        com.datadoghq.ad.logs: >-
+          [{
+            "source": "fastify",
+            "service": "dd-logapp",
+            "log_processing_rules": [{
+              "type": "mask_sequences",
+              "name": "mask_datadoghq_users",
+              "replace_placeholder": "[masked_datadog_email]",
+              "pattern" : "\\w+@datadoghq.com"
+            },{
+              "type": "mask_sequences",
+              "name": "mask_6digits",
+              "replace_placeholder": "[masked_digits]",
+              "pattern" : "\\d{6}"
+            },{
+              "type": "mask_sequences",
+              "name": "mask_emails",
+              "replace_placeholder": "[masked_email]",
+              "pattern": "\\w+@\\w+\\.\\w+"
+            },{
+              "type": "mask_sequences",
+              "name": "simple_ip_address",
+              "replace_placeholder": "[masked_ip]",
+              "pattern": "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)"
+            }]
+          }]
+  
+  datadog:
+    container_name: datadog-agent
+    image: datadog/agent:latest
+    environment:
+      ## GLOBALS
+      - DD_API_KEY
+      - DD_SITE
+      - DD_HOSTNAME=sandbox
+      - DD_TAGS=env:dev team:ddog
+      - DD_AC_EXCLUDE=name:datadog-agent # exclude this container from data collection
+      ## APM https://docs.datadoghq.com/agent/docker/apm/
+      - DD_APM_ENABLED=true
+      - DD_APM_NON_LOCAL_TRAFFIC=true
+      - DD_APM_IGNORE_RESOURCES=GET /static, GET /health # Exclude resources that are not necessary to track and maybe too verbose
+      ## LOGS https://docs.datadoghq.com/agent/docker/log/
+      - DD_LOGS_ENABLED=true
+      - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
+      ## LIVE PROCESSES https://docs.datadoghq.com/graphing/infrastructure/process/?tab=docker
+      - DD_PROCESS_AGENT_ENABLED=true
+      ## DOGSTATSD
+      - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
+    ports:
+      - 8126:8126/tcp # APM available from any host
+      - 8125:8125/udp # Dogstatsd
+    volumes:
+     - /var/run/docker.sock:/var/run/docker.sock:ro
+     - /proc/:/host/proc/:ro
+     - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+     - /etc/passwd:/etc/passwd:ro # LIVE PROCESSES
+
+

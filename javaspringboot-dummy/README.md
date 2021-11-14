@@ -99,3 +99,4 @@ Add the method of interest in your Java execution:
 
 - Move app to JDK 11 to use profiling
 - Fix option 2 in Instrument a method
+<!-- -Ddd.trace.http.client.split-by-domain=true et -Ddd.service.mapping=“kafka:kafkawithagent” -->

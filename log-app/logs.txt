@@ -1,0 +1,8 @@
+email:nnn@ddog.com
+this is a log line
+customer_id:123456
+email:bbb@ddog.com
+email:ggg@ddog.com
+customer_id:654321
+email:nickname@datadoghq.com
+my_ip:126.255.255.254
