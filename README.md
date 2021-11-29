@@ -14,3 +14,5 @@ Demo Apps:
 List of other repositories to instrument:
 
 - https://github.com/DataDog/trace-examples
+- https://github.com/Dynatrace/easyTravel-Docker
+- [Jaime's Demo](https://datadog.zoom.us/recording/play/2SpVBnyJluKxWN5r1hJWJqWOubZW0Mk2FyYKxnCQLzJaVtPQgYL-JkbueajwIDri?continueMode=true) - Redis and Kafka on Kubernetes

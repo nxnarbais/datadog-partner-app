@@ -1,0 +1,16 @@
+{
+  "name": "nodejs-fastify",
+  "version": "0.1.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run": "node server"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dd-trace": "^1.5.1",
+    "fastify": "^3.24.0"
+  }
+}
