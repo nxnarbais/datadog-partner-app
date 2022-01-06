@@ -1,0 +1,80 @@
+service: serverless-partner-nodejs
+frameworkVersion: '2 || 3'
+useDotenv: true
+
+plugins:
+  - serverless-plugin-datadog
+
+# custom:
+#   # Our stage is based on what is passed in when running serverless
+#   # commands. Or fallsback to what we have set in the provider section.
+#   stage: ${opt:stage, self:provider.stage}
+#   # Set the table name here so we can use it while testing locally
+#   tableName: ${self:custom.stage}-notes
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: '20201221'
+  region: us-east-1
+  iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:DescribeTable
+      - dynamodb:Query
+      - dynamodb:Scan
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+      - dynamodb:DeleteItem
+    Resource:
+      - "Fn::GetAtt": [ usersTable, Arn ]
+  environment:
+    TABLE_NAME: 
+      Ref: usersTable
+    DD_ENV: dev
+    DD_SERVICE: serverless-partner-nodejs
+    DD_VERSION: 0.0.1
+    DD_TAGS: creator:narbais,my_lambda_tag:is_awesome
+  httpApi:
+    cors: true
+
+functions:
+  hello:
+    handler: handler.my_hello_fn
+    events:
+      - httpApi:
+          path: /
+          method: get
+      - httpApi:
+          path: /test
+          method: get
+    timeout: 10
+    memorySize: 192
+  list:
+    handler: handler.list
+    events:
+      - httpApi:
+          path: /list
+          method: get
+    timeout: 10
+    memorySize: 192
+    
+
+custom:
+  # more config: https://docs.datadoghq.com/serverless/libraries_integrations/plugin/
+  datadog:
+    addExtension: true
+    apiKey: ${env:DD_API_KEY}
+    site: datadoghq.com
+    logLevel: "info"
+    enableDDTracing: true # default: true
+    enableDDLogs: true # default: true
+    subscribeToAccessLogs: true
+    forwarderArn: ${env:DD_FORWARDER_ARN}
+    enableTags: true # default: true  
+    injectLogContext: true # default: true
+    captureLambdaPayload: true # default: false (experimental)
+
+resources: # CloudFormation template syntax from here on.
+  - ${file(resources/dynamodb-table.yml)}

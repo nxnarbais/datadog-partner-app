@@ -1,0 +1,14 @@
+{
+  "name": "serverless-partner-nodejs",
+  "version": "0.1.0",
+  "description": "Partner NodeJS Serverless ===================",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "serverless-plugin-datadog": "^3.4.0"
+  }
+}
