@@ -11,6 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "dd-trace": "^1.5.1",
-    "fastify": "^3.24.0"
+    "fastify": "^3.29.4"
   }
 }
